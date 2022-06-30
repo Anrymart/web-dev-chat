@@ -1,19 +1,23 @@
 package app;
 
-import app.util.HerokuUtil;
+import static io.javalin.apibuilder.ApiBuilder.get;
+import static io.javalin.apibuilder.ApiBuilder.path;
+import static j2html.TagCreator.article;
+import static j2html.TagCreator.attrs;
+import static j2html.TagCreator.b;
+import static j2html.TagCreator.p;
+import static j2html.TagCreator.span;
+
 import io.javalin.Javalin;
 import io.javalin.websocket.WsContext;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONObject;
-
-import static io.javalin.apibuilder.ApiBuilder.*;
-// import static j2html.TagCreator.article;
-// import static j2html.TagCreator.attrs;
-// import static j2html.TagCreator.b;
-// import static j2html.TagCreator.p;
-// import static j2html.TagCreator.span;
 
 public class Chat {
 
@@ -23,7 +27,7 @@ public class Chat {
   public static void main(String[] args) {
     Javalin app = Javalin.create(config -> {
       config.addStaticFiles("/public");
-    }).start(HerokuUtil.getHerokuAssignedPort());
+    }).start(8080);
 
     app.ws("/chat", ws -> {
       ws.onConnect(ctx -> {
@@ -66,26 +70,26 @@ public class Chat {
     });
   }
 
-  // /**
-  //  * Safe way
-  //  */
-  //  private static String createHtmlMessageFromSender(String sender, String message) {
-  //      return article(
-  //          b(sender + " says:"),
-  //          span(attrs(".timestamp"), new SimpleDateFormat("HH:mm:ss").format(new Date())),
-  //          p(message)
-  //      ).render();
-  //  }
-
   /**
-   * Unsafe way
+   * Safe way
    */
-  private static String createHtmlMessageFromSender(String sender, String message) {
-    return String.format(
-        "<article><b>%s says:</b><span class=\"timestamp\">%s</span><p>%s</p></article>",
-        sender,
-        new SimpleDateFormat("HH:mm:ss").format(new Date()),
-        message);
-  }
+   private static String createHtmlMessageFromSender(String sender, String message) {
+       return article(
+           b(sender + " says:"),
+           span(attrs(".timestamp"), new SimpleDateFormat("HH:mm:ss").format(new Date())),
+           p(message)
+       ).render();
+   }
+
+  // /**
+  //  * Unsafe way
+  //  */
+  // private static String createHtmlMessageFromSender(String sender, String message) {
+  //   return String.format(
+  //       "<article><b>%s says:</b><span class=\"timestamp\">%s</span><p>%s</p></article>",
+  //       sender,
+  //       new SimpleDateFormat("HH:mm:ss").format(new Date()),
+  //       message);
+  // }
 
 }
